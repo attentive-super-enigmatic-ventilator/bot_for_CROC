@@ -2,11 +2,15 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('C:/Users/user/Desktop/bot_silaedr/JSON.json', scope)
-client = gspread.authorize(creds)
-sheet = client.open('Silaedr').worksheet('контакты учеников')
-sheet = sheet.get_all_values()
 contacts = []
-print(sheet)
+
+
+def auth():
+    global sheet
+    global client
+    client = gspread.authorize(creds)
+    sheet = client.open('Silaedr').worksheet('контакты учеников')
+    sheet = sheet.get_all_values()
 
 
 def clear():
@@ -14,7 +18,7 @@ def clear():
     contacts = []
 
 
-def sravnenie(a, b):
+def check(a, b):
     d = []
     for i in range(len(a)):
         d.append([0] * (len(b)))

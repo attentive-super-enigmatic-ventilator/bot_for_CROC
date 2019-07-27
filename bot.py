@@ -129,7 +129,7 @@ news = ''
 users = {}
 # while True:
 #    try:
-
+print(1)
 for event in VkLongPoll(vk_session).listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and str(event.user_id) in admins:
         print(event.message_id)
@@ -262,6 +262,7 @@ for event in VkLongPoll(vk_session).listen():
             to_all = False
             bred = False
             grade = '0'
+            google.auth()
             for i in range(len(text)):
                 try:
                     # print(text[i])
