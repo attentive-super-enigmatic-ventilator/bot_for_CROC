@@ -137,7 +137,7 @@ for event in VkLongPoll(vk_session).listen():
             users[event.user_id] = 0
         bred = True
         inf = (vko.users.get(user_ids=event.user_id)[0])
-        print('Я получил сообщение от '+(inf['first_name'])+' ' +
+        print('Я получил сообщение от '+(inf['first_name']) + ' ' +
               inf['last_name'])
         text = event.text.lower()
         pprint(event.attachments)
@@ -189,7 +189,7 @@ for event in VkLongPoll(vk_session).listen():
             if not f_group:
                 vko.messages.send(user_id=event.user_id,
                                   random_id=random.randint(1, 10 ** 9),
-                                  message='Новость отправлена на почту выбранным родителям! Вы хотите отправить новость еще куда-нибудь?',
+                                  message='Новость отправлена на почту выбранным контактам! Вы хотите отправить новость еще куда-нибудь?',
                                   keyboard=create_keyb1(['Группа ВК', 'new_line', 'Нет, спасибо']))
                 f_mail = True
                 users[event.user_id] = 2
@@ -201,7 +201,7 @@ for event in VkLongPoll(vk_session).listen():
                 f_mail = False
                 vko.messages.send(user_id=event.user_id,
                                   random_id=random.randint(1, 10 ** 9),
-                                  message='Новость отправлена на почту выбранным родителям! Обращайтесь, когда появятся еще новости!',
+                                  message='Новость отправлена на почту выбранным контактам! Обращайтесь, когда появятся еще новости!',
                                   keyboard=base)
                 users[event.user_id] = 0
                 if contacts != []:
@@ -232,7 +232,7 @@ for event in VkLongPoll(vk_session).listen():
             vko.messages.send(user_id=event.user_id,
                               random_id=random.randint(1, 10 ** 9),
                               message='Куда Вы хотите отправить новость?',
-                              keyboard=create_keyb(['Группа ВК',  'Почта родителей']))
+                              keyboard=create_keyb(['Группа ВК',  'Почта']))
             bred = False
             users[event.user_id] = 2
             continue
@@ -282,6 +282,10 @@ for event in VkLongPoll(vk_session).listen():
                 contacts += google.contacts
                 google.clear()
                 to_all = True
+            elif 'учителя' in text:
+                google.send_to_teachers()
+                contacts += google.contacts
+                google.clear()
             else:
                 google.send_to_some(event.text)
                 contacts += google.contacts
@@ -293,15 +297,15 @@ for event in VkLongPoll(vk_session).listen():
             else:
                 vko.messages.send(user_id=event.user_id,
                                   random_id=random.randint(1, 10 ** 9),
-                                  message='Вы хотите отправить новость еще кому-нибудь? Если хотите, то напишите кому еще надо отправить новость, а если хотите отправить новость предыдущим контактам, то нажмите на кнопку "Отправить ранее выбранным контактам".' +
+                                  message='Вы хотите отправить новость еще кому-нибудь? Если хотите, то напишите кому еще надо отправить новость, а если хотите отправить новость ранее выбранным контактам, то нажмите на кнопку "Отправить ранее выбранным контактам".' +
                                           '\n' + 'Для отмены отправки нажмите на кнопку "Отменить отправку"',
-                                  keyboard=create_keyb(['5 С', '6 С', '7 С', 'new_line', '7 Т', '8 Л', '9 С', 'new_line', 'Отправить ранее выбранным контактам']))
-        if text == 'почта родителей' and users[event.user_id] == 2:
+                                  keyboard=create_keyb(['5 С', '6 С', '7 С', 'new_line', '7 Т', '8 Л', '9 С', 'new_line', 'Учителя', 'Отправить ранее выбранным контактам']))
+        if text == 'почта' and users[event.user_id] == 2:
             vko.messages.send(user_id=event.user_id,
                               random_id=random.randint(1, 10 ** 9),
-                              message='Кому из родителей Вы хотите отправить новость? Вы можете отправить новость всем родителям определенного класса с помощью кнопок снизу.' + '\n' +
+                              message='Кому Вы хотите отправить новость? Вы можете отправить новость всем родителям определенного класса с помощью кнопок снизу.' + '\n' +
                                       ' Также Вы можете отправить новость конкретным родителям, написав сообщение типа "маме <Имя ребенка> <Фамилия ребенка>" или "отцу <Имя ребенка> <Фамилия ребенка>".',
-                              keyboard=create_keyb(['5 С', '6 С', '7 С', 'new_line', '7 Т', '8 Л', '9 С', 'new_line', 'Всем']))
+                              keyboard=create_keyb(['5 С', '6 С', '7 С', 'new_line', '7 Т', '8 Л', '9 С', 'new_line', 'Учителя', 'Всем']))
             users[event.user_id] = 3
             bred = False
         if text == 'опубликовать новость' and users[event.user_id] == 2:
@@ -317,7 +321,7 @@ for event in VkLongPoll(vk_session).listen():
                 vko.messages.send(user_id=event.user_id,
                                   random_id=random.randint(1, 10 ** 9),
                                   message='Новость выложена в группе Силаэдра в ВК! Вы хотите отправить ее еще куда-нибудь?',
-                                  keyboard=create_keyb1(['Почта родителей', 'new_line', 'Нет, спасибо']))
+                                  keyboard=create_keyb1(['Почта', 'new_line', 'Нет, спасибо']))
             else:
                 f_group = False
                 f_mail = False
@@ -352,9 +356,9 @@ for event in VkLongPoll(vk_session).listen():
             vko.messages.send(user_id=event.user_id,
                               random_id=random.randint(1, 10 ** 9),
                               message='К сожалению, сайт Силаэдра пока не работает! Вы хотите отправить новость еще куда-нибудь?',
-                              keyboard=create_keyb1(['Группа ВК', 'Сайт', 'Почта родителей', 'new_line', 'Нет, спасибо']))
+                              keyboard=create_keyb1(['Группа ВК', 'Сайт', 'Почта', 'new_line', 'Нет, спасибо']))
             bred = False
-        if text == 'help' or text == 'помощь' or text == '/start' or text == 'start' or text == '/help':
+        if text == 'help' or text == 'помощь' or text == '/start' or text == '/help' or text == 'начать':
             vko.messages.send(user_id=event.user_id,
                               random_id=random.randint(1, 10 ** 9),
                               message='Мои функции:' + '\n' +
@@ -365,8 +369,11 @@ for event in VkLongPoll(vk_session).listen():
         if bred:
             vko.messages.send(user_id=event.user_id,
                               random_id=random.randint(1, 10 ** 9),
-                              message='Извините, я Вас не понимаю. Чтобы ознакомиться с моими командами, напишите "help"',
-                              keyboard=create_keyb1(['help']))
+                              message='Извините, я Вас не понимаю. ' + '\n' +
+                                      'Мои функции:' + '\n' +
+                                      '- напишите мне "Отправить" для автоматической рассылки новостей, далее следуйте моим указаниям' + '\n' +
+                                      '- напишите мне "Привет", и я поздороваюсь с Вами',
+                              keyboard=base)
         print(users)
     # except:
     #    pass

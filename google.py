@@ -90,5 +90,12 @@ def send_to_some(crit):
                 break
 
 
-# send_to_some('Отправить маме Вовы Корякина')
-# print(contacts)
+def send_to_teachers():
+    sheet = client.open('Silaedr').worksheet('контакты учителей')
+    sheet = sheet.get_all_values()
+    print(sheet)
+    global contacts
+    for i in range(2, len(sheet)):
+        contacts.append(sheet[i][sheet[0].index('e-mail')])
+    print(contacts)
+
