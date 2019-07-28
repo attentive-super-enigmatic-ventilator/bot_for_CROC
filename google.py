@@ -45,6 +45,7 @@ def check(a, b):
     f = d[-1][-1]
     return f
 
+
 def send_to_class(klass):
     f = False
     global contacts
@@ -59,6 +60,18 @@ def send_to_class(klass):
             break
 
 
+def send_to_children(grade):
+    global contacts
+    f = False
+    for i in range(len(sheet)):
+        if sheet[i][0] == grade:
+            if len(sheet[i][sheet[0].index('e-mail ребенка')]) > 8:
+                contacts.append(sheet[i][sheet[0].index('e-mail ребенка')])
+            f = True
+        elif f:
+            break
+
+
 def send_to_all():
     global contacts
     for i in range(1, len(sheet)):
@@ -66,6 +79,9 @@ def send_to_all():
             contacts.append(sheet[i][sheet[0].index('e-mail матери')])
         if len(sheet[i][sheet[0].index('e-mail отца')]) > 8:
             contacts.append(sheet[i][sheet[0].index('e-mail отца')])
+        if len(sheet[i][sheet[0].index('e-mail ребенка')]) > 8:
+            contacts.append(sheet[i][sheet[0].index('e-mail ребенка')])
+        send_to_teachers()
 
 
 def send_to_some(crit):
