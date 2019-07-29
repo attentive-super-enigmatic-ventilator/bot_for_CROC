@@ -1,7 +1,7 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('C:/Users/user/Desktop/bot_silaedr/JSON.json', scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name('JSON.json', scope)
 contacts = []
 
 
@@ -88,22 +88,16 @@ def send_to_some(crit):
     global contacts
     crit = [i for i in crit.split()]
     name = []
+    print(crit)
     for i in range(1, len(crit)):
         if crit[i][0].isupper():
             name.append(crit[i])
     print(name)
-    if 'маме' in crit or 'матери' in crit:
-        j = sheet[0].index('e-mail матери')
-        for i in range(1, len(sheet)):
-            if name[1][:len(name[1])-2] in sheet[i][sheet[0].index('Фамилия')]:
-                contacts.append(sheet[i][j])
-                break
-    if 'папе' in crit or 'отцу' in crit:
-        j = sheet[0].index('e-mail отца')
-        for i in range(1, len(sheet)):
-            if name[1][:len(name[1])-2] in sheet[i][sheet[0].index('Фамилия')]:
-                contacts.append(sheet[i][j])
-                break
+    j = sheet[0].index('e-mail матери')
+    for i in range(1, len(sheet)):
+        if name[1][:len(name[1])-2] in sheet[i][sheet[0].index('Фамилия')]:
+            contacts.append(sheet[i][j])
+            break
 
 
 def send_to_teachers():

@@ -17,18 +17,20 @@ from email.mime.multipart import MIMEMultipart
 from pprint import pprint
 import glob
 import urllib.request
+import face_recognition
 
-service_access_key = open('C:/Users/user/Desktop/bot_silaedr/service.txt').read().splitlines()
+
+service_access_key = open('service.txt').read().splitlines()
 session = vk.Session(access_token=service_access_key)
 api1 = vk.API(session, v=5.101, scope='wall')
-owner_id = open('C:/Users/user/Desktop/bot_silaedr/owner.txt').read().splitlines()
-admins = {str(i) for i in open('C:/Users/user/Desktop/bot_silaedr/admins.txt').read().splitlines()}
-loginpassword = open('C:/Users/user/Desktop/bot_silaedr/login, password.txt').read().splitlines()
-pochta = open('C:/Users/user/Desktop/bot_silaedr/mail.txt').read().splitlines()
-tokens = open('C:/Users/user/Desktop/bot_silaedr/secret.txt').read().splitlines()
+owner_id = open('owner.txt').read().splitlines()
+admins = {str(i) for i in open('admins.txt').read().splitlines()}
+loginpassword = open('login_password.txt').read().splitlines()
+pochta = open('mail.txt').read().splitlines()
+tokens = open('secret.txt').read().splitlines()
 vk_session = vk_api.VkApi(token=tokens[0])
 vko = vk_session.get_api()
-app = open('C:/Users/user/Desktop/bot_silaedr/app.txt').read().splitlines()
+app = open('app.txt').read().splitlines()
 sessio = vk.AuthSession(scope='wall', app_id=app, user_login=loginpassword[0], user_password=loginpassword[1].encode('utf-8').strip())
 api = vk.API(sessio, v=5.101)
 contacts = []
@@ -109,7 +111,7 @@ def create_keyb(buttons):
     return keyboard
 
 
-folder = 'C:/Users/user/Desktop/bot_silaedr/photos'
+folder = 'photos'
 for the_file in os.listdir(folder):
     file_path = os.path.join(folder, the_file)
     try:
@@ -152,7 +154,7 @@ for event in VkLongPoll(vk_session).listen():
             f_mail = False
             users[event.user_id] = 0
             contacts = []
-            folder = 'C:/Users/user/Desktop/bot_silaedr/photos'
+            folder = 'photos'
             for the_file in os.listdir(folder):
                 file_path = os.path.join(folder, the_file)
                 try:
@@ -172,11 +174,11 @@ for event in VkLongPoll(vk_session).listen():
             users[event.user_id] = 0
             if contacts != []:
                 print(contacts)
-                sendmail(news, glob.glob("C:/Users/user/Desktop/bot_silaedr/photos/*.jpg"))
+                sendmail(news, glob.glob("photos/*.jpg"))
             contacts = []
             news = ''
             bred = False
-            folder = 'C:/Users/user/Desktop/bot_silaedr/photos'
+            folder = 'photos'
             for the_file in os.listdir(folder):
                 file_path = os.path.join(folder, the_file)
                 try:
@@ -195,7 +197,7 @@ for event in VkLongPoll(vk_session).listen():
                 users[event.user_id] = 2
                 if contacts != []:
                     print(contacts)
-                    sendmail(news, glob.glob("C:/Users/user/Desktop/bot_silaedr/photos/*.jpg"))
+                    sendmail(news, glob.glob("photos/*.jpg"))
             else:
                 f_group = False
                 f_mail = False
@@ -206,11 +208,11 @@ for event in VkLongPoll(vk_session).listen():
                 users[event.user_id] = 0
                 if contacts != []:
                     print(contacts)
-                    sendmail(news, glob.glob("C:/Users/user/Desktop/bot_silaedr/photos/*.jpg"))
+                    sendmail(news, glob.glob("photos/*.jpg"))
                 contacts = []
                 news = ''
                 bred = False
-                folder = 'C:/Users/user/Desktop/bot_silaedr/photos'
+                folder = 'photos'
                 for the_file in os.listdir(folder):
                     file_path = os.path.join(folder, the_file)
                     try:
@@ -220,7 +222,32 @@ for event in VkLongPoll(vk_session).listen():
                     except Exception as e:
                         print(e)
             bred = False
+        if users[event.user_id] == 1 and text == 'да':
+            google.auth()
+            google.send_to_some(name[1])
+            contacts = google.contacts
+            google.clear()
+            sendmail(news, glob.glob("photos/*.jpg"))
+            vko.messages.send(user_id=event.user_id,
+                              random_id=random.randint(1, 10 ** 9),
+                              message='Новость отправлена! Обращайтесь, когда появятся еще новости!',
+                              keyboard=base)
+            users[event.user_id] = 0
+            contacts = []
+            news = ''
+            bred = False
+            folder = '/home/alexandr/PycharmProjects/chatbot/photos'
+            for the_file in os.listdir(folder):
+                file_path = os.path.join(folder, the_file)
+                try:
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path)
+                    # elif os.path.isdir(file_path): shutil.rmtree(file_path)
+                except Exception as e:
+                    print(e)
+            continue
         if users[event.user_id] == 1:
+            result = []
             news = event.text
             flag = False
             photos = api1.messages.getById(message_ids=event.message_id, group_id=183112747)
@@ -228,7 +255,30 @@ for event in VkLongPoll(vk_session).listen():
                 length = len(photos['items'][0]['attachments'][i]['photo']['sizes']) - 1
                 print(photos['items'][0]['attachments'][i]['photo']['sizes'][length]['url'])
                 urllib.request.urlretrieve(photos['items'][0]['attachments'][i]['photo']['sizes'][length]['url'],
-                                           'C:/Users/user/Desktop/bot_silaedr/photos/' + str(i) + '.jpg')
+                                           'photos/' + str(i) + '.jpg')
+            face = False
+            #import googledriveapi3
+            import facerecognition4
+            print(facerecognition4.quantity_faces)
+            if not facerecognition4.quantity_faces == []:
+                for i in facerecognition4.known_faces_encodings.keys():
+                    for j in facerecognition4.test_image_encodings:
+                        comparing = face_recognition.compare_faces([facerecognition4.known_faces_encodings[i]], j)[0]
+                        if comparing:
+                            result.append(i)
+                            print(result)
+                            name = i.split('/')[-1].split('_')
+                            name[1] = name[1][:len(name[1])-4]
+                            vko.messages.send(user_id=event.user_id,
+                                              random_id=random.randint(1, 10 ** 9),
+                                              message='Вы хотите отправить сообщение на почту родителям ребенка, который есть на этой фотографии? (' + i.split('/')[-1].split('_')[0] + ' ' + i.split('/')[-1].split('_')[1][:len(i.split('/')[-1].split('_')[1])-4] + ')', keyboard=create_keyb1(['Да', 'Нет']))
+                            face = True
+                        else:
+                            print('Не найдено похожего лица')
+                if face:
+                    continue
+            else:
+                print('На этих фотографиях не найдено лиц')
             vko.messages.send(user_id=event.user_id,
                               random_id=random.randint(1, 10 ** 9),
                               message='Куда Вы хотите отправить новость?',
@@ -334,7 +384,7 @@ for event in VkLongPoll(vk_session).listen():
             users[event.user_id] = 3
             bred = False
         if text == 'опубликовать новость' and users[event.user_id] == 2:
-            photos = glob.glob("C:/Users/user/Desktop/bot_silaedr/photos/*.jpg")
+            photos = glob.glob("photos/*.jpg")
             if photos != []:
                 photo_list = upload.photo_wall(photos)
                 attachment = ','.join('photo{owner_id}_{id}'.format(**item) for item in photo_list)
@@ -357,11 +407,11 @@ for event in VkLongPoll(vk_session).listen():
                 users[event.user_id] = 0
                 if contacts != []:
                     print(contacts)
-                    sendmail(news, glob.glob("C:/Users/user/Desktop/bot_silaedr/photos/*.jpg"))
+                    sendmail(news, glob.glob("photos/*.jpg"))
                 contacts = []
                 news = ''
                 bred = False
-                folder = 'C:/Users/user/Desktop/bot_silaedr/photos'
+                folder = 'photos'
                 for the_file in os.listdir(folder):
                     file_path = os.path.join(folder, the_file)
                     try:
